@@ -11,8 +11,8 @@ public class PlayerMovement : MonoBehaviour
     public float movementSpeed = 3;
     public float jumpSpeed = 3;
 
-    private float verticalVelocty;
-    private float floatSpeed = 0;
+    private float verticalVelocty = 3;
+    private float floatSpeed = 3;
     
     // Start is called before the first frame update
     void Start()

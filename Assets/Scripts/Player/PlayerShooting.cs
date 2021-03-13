@@ -11,6 +11,8 @@ public class PlayerShooting : MonoBehaviour
     public Transform paintIndicator0;
     public Transform paintIndicator1;
 
+    public WorldGenerator wg;
+
     private float timer;
     private float altTimer;
     private bool painter;
@@ -103,7 +105,7 @@ public class PlayerShooting : MonoBehaviour
 
     void Paint(float r, float w)
     {
-
+        wg.ModifyTerrain(paintIndicator0.position, r, w);
     }
 
     private void OnGUI()

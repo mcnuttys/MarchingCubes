@@ -1,0 +1,63 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel ComputeNodes
+#pragma kernel ComputeCubes
+
+struct Node {
+    float weight;
+    float3 pos;
+};
+
+struct Cube {
+    float3 pos;
+    int nodes;
+    int cost;
+};
+
+RWStructuredBuffer<Node> Nodes;
+RWStructuredBuffer<Cube> Cubes;
+
+int res = 8;
+
+
+int compressIndex(int x, int y, int z)
+{
+    return x + res * (y + res * z);
+}
+
+// This method computes the nodes of the shape...
+[numthreads(8, 8, 8)]
+void ComputeNodes (uint3 id : SV_DispatchThreadID)
+{
+    int index = compressIndex(id.x, id.y, id.z);
+    Node n;
+    n.weight = index + 1;
+    n.pos = float3(id.x, id.y, id.z);
+    Nodes[index] = n;
+}
+
+[numthreads(8, 8, 8)]
+void ComputeCubes(uint3 id: SV_DispatchThreadID) {
+    int index = compressIndex(id.x, id.y, id.z);
+    Cube c;
+    c.pos = float3(id.x + 0.5, id.y + 0.5, id.z + 0.5);
+    c.nodes = compressIndex(id.x, id.y, id.z);
+    //c.nodes[1] = compressIndex(id.x, id.y, id.z + 1);
+    //c.nodes[2] = compressIndex(id.x + 1, id.y, id.z + 1);
+    //c.nodes[3] = compressIndex(id.x + 1, id.y, id.z);
+    //c.nodes[4] = compressIndex(id.x, id.y + 1, id.z);
+    //c.nodes[5] = compressIndex(id.x, id.y + 1, id.z + 1);
+    //c.nodes[6] = compressIndex(id.x + 1, id.y + 1, id.z + 1);
+    //c.nodes[7] = compressIndex(id.x + 1, id.y + 1, id.z);
+
+    c.cost = 0;
+    //if (Nodes[c.nodes[0]].weight > 0) c.cost += 1;
+    //if (Nodes[c.nodes[1]].weight > 0) c.cost += 2;
+    //if (Nodes[c.nodes[2]].weight > 0) c.cost += 4;
+    //if (Nodes[c.nodes[3]].weight > 0) c.cost += 8;
+    //if (Nodes[c.nodes[4]].weight > 0) c.cost += 16;
+    //if (Nodes[c.nodes[5]].weight > 0) c.cost += 32;
+    //if (Nodes[c.nodes[6]].weight > 0) c.cost += 64;
+    //if (Nodes[c.nodes[7]].weight > 0) c.cost += 128;
+
+    Cubes[index] = c;
+}

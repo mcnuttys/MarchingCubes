@@ -1,0 +1,18 @@
+// Each #kernel tells which function to compile; you can have many kernels
+#pragma kernel ComputeMesh
+
+RWStructuredBuffer<float3> verts;
+
+int res;
+
+int compressIndex(int x, int y, int z)
+{
+    return x + res * (y + res * z);
+}
+
+[numthreads(8,8,8)]
+void ComputeMesh(uint3 id : SV_DispatchThreadID)
+{
+    int index = compressIndex(id.x, id.y, id.z);
+    verts[index] = float3(id.x, id.y, id.z);
+}

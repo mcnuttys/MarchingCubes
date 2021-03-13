@@ -257,6 +257,7 @@ GameObject:
   - component: {fileID: 893625683}
   - component: {fileID: 893625682}
   - component: {fileID: 893625684}
+  - component: {fileID: 893625685}
   m_Layer: 0
   m_Name: WorldGenerator
   m_TagString: Untagged
@@ -278,9 +279,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   renderDistance: 8
   target: {fileID: 906571529}
-  chunkSize: {x: 16, y: 64, z: 16}
-  subChunkCount: 4
-  chunkMaterial: {fileID: 2100000, guid: c37a2ac2ea0791249ba203b78fe760d8, type: 2}
+  chunkSize: {x: 16, y: 16, z: 16}
+  chunkList: []
+  currentChunk: {x: 0, y: 0, z: 0}
 --- !u!4 &893625683
 Transform:
   m_ObjectHideFlags: 0
@@ -304,11 +305,26 @@ MonoBehaviour:
   m_GameObject: {fileID: 893625681}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a12baad1221f88e4e96305298e186dfd, type: 3}
+  m_Script: {fileID: 11500000, guid: d3c38af672baa36418723ad8cf005f38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  generationTimeout: 0.25
-  maxGenerationThreads: 4
+  maxGenerationThreads: 8
+  maxUpdateThreads: 8
+  maxGenerationTime: 1
+  maxUpdateTime: 1
+--- !u!114 &893625685
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 893625681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0feaa11b897d00a459dfba1ae71a6c0c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  chunkMaterial: {fileID: 2100000, guid: c37a2ac2ea0791249ba203b78fe760d8, type: 2}
 --- !u!1001 &906571528
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -316,10 +332,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 8997031112713556108, guid: e00c06b9debaa9e43bf3d754450cd9ff, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 8997031112713556110, guid: e00c06b9debaa9e43bf3d754450cd9ff, type: 3}
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 8997031112713556209, guid: e00c06b9debaa9e43bf3d754450cd9ff, type: 3}
+      propertyPath: wg
+      value: 
+      objectReference: {fileID: 893625682}
     - target: {fileID: 8997031112713556210, guid: e00c06b9debaa9e43bf3d754450cd9ff, type: 3}
       propertyPath: m_RootOrder
       value: 3

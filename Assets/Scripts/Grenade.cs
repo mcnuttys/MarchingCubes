@@ -40,7 +40,7 @@ public class Grenade : MonoBehaviour
             }
         }
 
-        //GameObject.FindObjectOfType<WorldGenerator>().ModifyTerrain(transform.position, explosionRange, weight);
+        GameObject.FindObjectOfType<WorldGenerator>().ModifyTerrain(transform.position, explosionRange, weight);
         GameObject.Destroy(gameObject);
     }
 }
