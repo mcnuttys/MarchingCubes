@@ -277,7 +277,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 42ca2d1869960bb42856cf103663b0b5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  renderDistance: 8
+  renderDistance: 16
   target: {fileID: 906571529}
   chunkSize: {x: 16, y: 16, z: 16}
   chunkList: []
@@ -308,8 +308,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d3c38af672baa36418723ad8cf005f38, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maxGenerationThreads: 8
-  maxUpdateThreads: 8
+  maxGenerationThreads: 16
+  maxUpdateThreads: 16
   maxGenerationTime: 1
   maxUpdateTime: 1
 --- !u!114 &893625685
