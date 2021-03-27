@@ -19,6 +19,7 @@ public class WorldGenerator : MonoBehaviour
     private Vector3Int lastChunk;
     private ChunkThreader chunkThreader;
     private VisualChunkManager visualChunkManager;
+    private TerrainGenerator tg;
 
     // Start is called before the first frame update
     void Start()
@@ -27,6 +28,7 @@ public class WorldGenerator : MonoBehaviour
         chunkList = new List<Chunk>();
         chunkThreader = GetComponent<ChunkThreader>();
         visualChunkManager = GetComponent<VisualChunkManager>();
+        tg = GetComponent<TerrainGenerator>();
     }
 
     // Update is called once per frame
@@ -68,6 +70,7 @@ public class WorldGenerator : MonoBehaviour
                     {
                         // If there isnt we need to generate a new one!
                         chunks[cPos] = new Chunk(cPos, chunkSize);
+                        chunks[cPos].tg = tg;
                         chunkList.Add(chunks[cPos]);
                         chunkThreader.RequestGeneration(chunks[cPos]);
                     }

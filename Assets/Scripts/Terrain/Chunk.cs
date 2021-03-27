@@ -9,11 +9,11 @@ public class Chunk
 {
     // This is the chunk script which just contains the information of each chunk. 
     // When the chunk is put into a visual chunk is when the marching cubes magic occures...
-
+    public TerrainGenerator tg;
     public Vector3Int pos;
     public Vector3Int size;
     private Node[,,] nodes;
-    public Cube[,,] cubes;
+    private BlockType[,,] blocks;
     public List<Vector3> vertices;
     public List<int> triangles;
     public List<Vector2> uv;
@@ -37,7 +37,7 @@ public class Chunk
             generating = true;
 
             nodes = new Node[size.x + 1, size.y + 1, size.z + 1];
-            cubes = new Cube[size.x, size.y, size.z];
+            blocks = new BlockType[size.x, size.y, size.z];
 
             vertices = new List<Vector3>();
             triangles = new List<int>();
@@ -47,11 +47,11 @@ public class Chunk
             {
                 for (int z = 0; z <= size.z; z++)
                 {
-                    float perlin = Mathf.PerlinNoise((pos.x + x + 1000) * 0.05f, (pos.z + z + 1000) * 0.05f) * 4f;
+                    float height = tg.GetHeight(pos.x + x, pos.z + z);
 
                     for (int y = 0; y <= size.y; y++)
                     {
-                        float weight = (pos.y + y) - perlin - 32;
+                        float weight = (pos.y + y) - height;
 
                         nodes[x, y, z] = new Node(x, y, z, weight);
 
@@ -67,6 +67,8 @@ public class Chunk
                             Node n6 = nodes[x, y, z];
                             Node n7 = nodes[x, y, z - 1];
 
+                            BlockType bt = tg.GetBlock(pos.y + y, height);
+                            blocks[x - 1, y - 1, z - 1] = bt;
                             int cubeIndex = CubeIndex(n0, n1, n2, n3, n4, n5, n6, n7);
 
                             if (cubeIndex > 0 && cubeIndex <= 255)
@@ -87,7 +89,9 @@ public class Chunk
                                     // We can also add the uv and triangle information in pretty much the same way.
                                     vertices.Add(GetAntiNode(tris[i], n0, n1, n2, n3, n4, n5, n6, n7));
                                     triangles.Add(vertexCount + i);
-                                    uv.Add(MarchingCubes.uv[cubeIndex][tris[i]]);
+                                    Vector2 UV = MarchingCubes.uv[cubeIndex][tris[i]];
+                                    Vector2 uvOffset = tg.blocks[(int)bt].uvOffset;
+                                    uv.Add(new Vector2((UV.x + uvOffset.x) / tg.x, (UV.y + (uvOffset.y)) / tg.y));
                                 }
                             }
                         }
@@ -117,10 +121,13 @@ public class Chunk
             // Loop through the cubes array to update the mesh...
             for (int x = 0; x <= size.x; x++)
             {
-                for (int y = 0; y <= size.y; y++)
+                for (int z = 0; z <= size.z; z++)
                 {
-                    for (int z = 0; z <= size.z; z++)
+                    float height = tg.GetHeight(pos.x + x, pos.z + z);
+
+                    for (int y = 0; y <= size.y; y++)
                     {
+                        // Now determine if we can make a cube in this cycle of the loop
                         if (x > 0 && y > 0 && z > 0)
                         {
                             Node n0 = nodes[x - 1, y - 1, z - 1];
@@ -132,6 +139,7 @@ public class Chunk
                             Node n6 = nodes[x, y, z];
                             Node n7 = nodes[x, y, z - 1];
 
+                            BlockType bt = blocks[x - 1, y - 1, z - 1];
                             int cubeIndex = CubeIndex(n0, n1, n2, n3, n4, n5, n6, n7);
 
                             if (cubeIndex > 0 && cubeIndex <= 255)
@@ -151,8 +159,9 @@ public class Chunk
                                     // We do have a valid value so add that vertex to the array.
                                     // We can also add the uv and triangle information in pretty much the same way.
                                     vertices.Add(GetAntiNode(tris[i], n0, n1, n2, n3, n4, n5, n6, n7));
-                                    triangles.Add(vertexCount + i);
-                                    uv.Add(MarchingCubes.uv[cubeIndex][tris[i]]);
+                                    triangles.Add(vertexCount + i); 
+                                    Vector2 UV = MarchingCubes.uv[cubeIndex][tris[i]] + tg.blocks[(int)bt].uvOffset;
+                                    uv.Add(new Vector2(UV.x / tg.x, UV.y / tg.y));
                                 }
                             }
                         }
@@ -232,84 +241,6 @@ public class Chunk
             if (nodes[x, y, z] != null)
                 nodes[x, y, z].weight += weight;
         }
-    }
-}
-
-public class Cube
-{
-    public int cubeIndex;
-    public bool active;
-    
-    public Node n0, n1, n2, n3, n4, n5, n6, n7;
-
-    public Cube(Node n0, Node n1, Node n2, Node n3, Node n4, Node n5, Node n6, Node n7)
-    {
-        this.n0 = n0;
-        this.n1 = n1;
-        this.n2 = n2;
-        this.n3 = n3;
-        this.n4 = n4;
-        this.n5 = n5;
-        this.n6 = n6;
-        this.n7 = n7;
-
-        ComputeCube();
-    }
-
-    public void ComputeCube()
-    {
-        cubeIndex = 0;
-        if (n0.weight > 0) cubeIndex += 1;
-        if (n1.weight > 0) cubeIndex += 2;
-        if (n2.weight > 0) cubeIndex += 4;
-        if (n3.weight > 0) cubeIndex += 8;
-        if (n4.weight > 0) cubeIndex += 16;
-        if (n5.weight > 0) cubeIndex += 32;
-        if (n6.weight > 0) cubeIndex += 64;
-        if (n7.weight > 0) cubeIndex += 128;
-        if (cubeIndex > 0 && cubeIndex <= 255)
-            active = true;
-    }
-
-    public Vector3 GetAntiNode(int index)
-    {
-        switch(index)
-        {
-            case 0:
-                return Interpolate(n0, n1);
-            case 1:
-                return Interpolate(n1, n2);
-            case 2:
-                return Interpolate(n2, n3);
-            case 3:
-                return Interpolate(n3, n0);
-
-            case 4:
-                return Interpolate(n4, n5);
-            case 5:
-                return Interpolate(n5, n6);
-            case 6:
-                return Interpolate(n6, n7);
-            case 7:
-                return Interpolate(n7, n4);
-
-            case 8:
-                return Interpolate(n0, n4);
-            case 9:
-                return Interpolate(n1, n5);
-            case 10:
-                return Interpolate(n2, n6);
-            case 11:
-                return Interpolate(n3, n7);
-        }
-
-        return Vector3.zero;
-    }
-
-    public Vector3 Interpolate(Node n0, Node n1)
-    {
-        float t = Mathf.Clamp01(-n0.weight * (1 / (n1.weight - n0.weight)));
-        return Vector3.Lerp(n0.pos, n1.pos, t);
     }
 }
 

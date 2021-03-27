@@ -257,6 +257,7 @@ GameObject:
   - component: {fileID: 893625683}
   - component: {fileID: 893625682}
   - component: {fileID: 893625684}
+  - component: {fileID: 893625686}
   - component: {fileID: 893625685}
   m_Layer: 0
   m_Name: WorldGenerator
@@ -325,6 +326,61 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   chunkMaterial: {fileID: 2100000, guid: c37a2ac2ea0791249ba203b78fe760d8, type: 2}
+--- !u!114 &893625686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 893625681}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 011beb397bb45854ebe36f713e0cc061, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  seed: 1234
+  x: 16
+  y: 1
+  blocks:
+  - type: 0
+    texture: {fileID: 2800000, guid: b502cb36e845c314e969e85596aad3c0, type: 3}
+    uvOffset: {x: 0, y: 0}
+  - type: 1
+    texture: {fileID: 2800000, guid: e6cc0db5bff8ace47a977877e52fa1e9, type: 3}
+    uvOffset: {x: 1, y: 0}
+  - type: 2
+    texture: {fileID: 2800000, guid: 7981c26a2f955484280d9d17426d1b75, type: 3}
+    uvOffset: {x: 2, y: 0}
+  - type: 3
+    texture: {fileID: 2800000, guid: 6d2592a55e0c6b6489e81582c994cf80, type: 3}
+    uvOffset: {x: 4, y: 0}
+  - type: 4
+    texture: {fileID: 2800000, guid: 0ca09643be3e78c41adfa0c059995225, type: 3}
+    uvOffset: {x: 3, y: 0}
+  heightCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 1
+      inSlope: 2
+      outSlope: 2
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1001 &906571528
 PrefabInstance:
   m_ObjectHideFlags: 0
